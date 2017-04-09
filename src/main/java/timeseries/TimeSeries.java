@@ -10,17 +10,17 @@ import javax.annotation.Nullable;
  */
 public abstract class TimeSeries implements Iterable<DataPoint> {
 
-  private final boolean isReverseOrdered;
+  protected final boolean isReverseOrdered;
 
-  private final boolean isBounded;
+  protected final boolean isBounded;
 
-  private final int sizeStepInSeconds;
+  protected final int sizeStepInSeconds;
 
-  private final LocalDateTime leftBoundary;
+  protected final LocalDateTime leftBoundary;
 
-  private final LocalDateTime rightBoundary;
+  protected final LocalDateTime rightBoundary;
 
-  private TimeSeries(Builder builder) {
+  protected TimeSeries(Builder builder) {
     isReverseOrdered = builder.isReverseOrdered();
     isBounded = builder.isBounded();
     sizeStepInSeconds = builder.getSizeStepInSeconds();
@@ -36,25 +36,29 @@ public abstract class TimeSeries implements Iterable<DataPoint> {
         rightBoundary);
   }
 
-  public abstract Builder builder();
-
   public TimeSeries subSeries(LocalDateTime leftBoundary, LocalDateTime rightBoundary) {
     return builder().withBoundaries(leftBoundary, rightBoundary).isReverseOrder(isReverseOrdered)
         .withSizeStepInSeconds(sizeStepInSeconds)
         .build();
   }
 
+  public abstract DataPoint getDataPoint(int idx);
+
   public abstract DataPoint getDataPoint(LocalDateTime localDateTime);
 
+  public static Builder builder() {
+    throw new UnsupportedOperationException("Static builder convenience method is not available in TimeSeries");
+  }
+
   public abstract static class Builder {
-    private boolean isReverseOrdered;
-    private boolean isBounded;
-    private int sizeStepInSeconds;
-    private @Nullable LocalDateTime leftBound;
-    private @Nullable LocalDateTime rightBound;
+    protected boolean isReverseOrdered;
+    protected boolean isBounded;
+    protected int sizeStepInSeconds;
+    protected  @Nullable LocalDateTime leftBound;
+    protected  @Nullable LocalDateTime rightBound;
 
 
-    private Builder() {
+    protected Builder() {
 
     }
 

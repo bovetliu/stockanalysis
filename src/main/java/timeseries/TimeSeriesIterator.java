@@ -59,17 +59,22 @@ public class TimeSeriesIterator implements Iterator<DataPoint> {
 
   @Override
   public boolean hasNext() {
-    if (isReverseOrdered) {
-
-    } else {
-
-    }
-    return false;
+    return next != null;
   }
 
   @Override
   public DataPoint next() {
-    return null;
+    DataPoint res = next;
+    LocalDateTime effectiveLeftBoundary = leftBoundary == null ? TimeUtils.Jan1st2016 : leftBoundary;
+    LocalDateTime effectiveRightBoundary = rightBoundary == null ? LocalDateTime.now() : rightBoundary;
+    final LocalDateTime nextDateTime;
+    nextDateTime = next.dateTime.plusSeconds(isReverseOrdered ? -stepInSecond : stepInSecond);
+    if (isReverseOrdered) {
+      next = nextDateTime.compareTo(effectiveLeftBoundary) < 0 ? null : timeSeries.getDataPoint(nextDateTime);
+    } else {
+      next = nextDateTime.compareTo(effectiveRightBoundary) > 0 ? null : timeSeries.getDataPoint(nextDateTime);
+    }
+    return res;
   }
 
   public boolean isReverseOrdered() {
