@@ -2,8 +2,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>stockanalysis</groupId>
-  <artifactId>personal.boweiliu</artifactId>
+  <groupId>personal.boweiliu</groupId>
+  <artifactId>stockanalysis</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -33,7 +33,7 @@
     </dependency>
     <dependency>
       <groupId>com.typesafe</groupId>
-      <artifactId>builder</artifactId>
+      <artifactId>config</artifactId>
       <version>1.3.1</version>
     </dependency>
     <dependency>
@@ -52,11 +52,18 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>personal.boweiliu</groupId>
+      <artifactId>stockanalysis</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 
   <build>
-    <finalName>timeseries</finalName>
+    <finalName>personal.boweiliu.person.boweiliu.timeseries</finalName>
     <plugins>
       <!-- Set a compiler level -->
       <plugin>
@@ -68,7 +75,18 @@
           <target>${jdk.version}</target>
         </configuration>
       </plugin>
-
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!--<plugin>-->
       <!--<artifactId>maven-assembly-plugin</artifactId>-->
       <!--<configuration>-->
