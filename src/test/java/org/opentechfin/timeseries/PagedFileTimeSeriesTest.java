@@ -11,6 +11,10 @@ import testlib.TestBase;
  */
 public class PagedFileTimeSeriesTest extends TestBase {
 
+  /**
+   * a series data points are stored in two files in folder "for_file_paged_test". In this test, it shows that paging is
+   * transparent to user. During iteration, next page is automatically fetched.
+   */
   @Test
   public void walkThroughTest() {
     DailyNamedFileConnector connector = new DailyNamedFileConnector("for_file_paged_test");
