@@ -6,7 +6,7 @@ import java.util.List;
 /**
  *
  */
-public class PageCursor<T> implements Iterator<T> {
+class PageCursor<T> implements Iterator<T> {
 
   protected int pos = 0;
 

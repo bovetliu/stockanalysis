@@ -2,14 +2,19 @@ package org.opentechfin.utils;
 
 import com.typesafe.config.Config;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import org.opentechfin.timeseries.DataPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegularUtils {
+
+  private static Logger logger = LoggerFactory.getLogger(RegularUtils.class);
 
   public static  <T> boolean isSorted(List<T> list, BiFunction<T,T,Integer> compFunc) {
     T prev = null;
@@ -58,4 +63,6 @@ public class RegularUtils {
     }
     return resDataPointList;
   }
+
+
 }

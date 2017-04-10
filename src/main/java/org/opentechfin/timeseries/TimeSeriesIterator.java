@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import org.opentechfin.utils.TimeUtils;
 
 /**
+ * This is default iterator. Usually it is slow.
  */
 public class TimeSeriesIterator implements Iterator<DataPoint> {
 

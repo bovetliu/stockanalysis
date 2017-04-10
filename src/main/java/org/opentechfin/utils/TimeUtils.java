@@ -5,14 +5,22 @@ import com.google.common.collect.ImmutableBiMap;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  */
 public class TimeUtils {
+
+  private static final Logger logger = LoggerFactory.getLogger(TimeUtils.class);
+
+  public static Random random = new Random();
 
   public static final LocalDateTime Jan1st2016 = LocalDate.of(2016,1,1).atStartOfDay();
 
@@ -72,5 +80,24 @@ public class TimeUtils {
 
   public enum TemporalDirection {
     FORWARD, BACKWARD
+  }
+
+  public static void dateTimePrint(LocalDateTime from, LocalDateTime to, int step) {
+    if (from.isAfter(to)) {
+      if (step >= 0) {
+        throw new IllegalArgumentException("when from is after to, step should be negative");
+      }
+      for (LocalDateTime i = from; !i.isBefore(to); i = i.plusSeconds(step)){
+//        logger.info("{}", i.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        System.out.println(i.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "," + random.nextInt(100));
+      }
+      return;
+    }
+    if (step <= 0) {
+      throw new IllegalArgumentException("when from is before to, step should be positive.");
+    }
+    for (LocalDateTime i = from; !i.isAfter(to); i = i.plusSeconds(step)) {
+      System.out.println(i.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "," + random.nextInt(100));
+    }
   }
 }

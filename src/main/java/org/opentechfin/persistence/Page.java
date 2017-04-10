@@ -3,7 +3,7 @@ package org.opentechfin.persistence;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class Page <T> implements Iterable<T> {
+public class Page <T> implements Iterable<T> {
 
   protected PageCursor<T> pageCursor;
 
@@ -41,4 +41,7 @@ public abstract class Page <T> implements Iterable<T> {
     return meta;
   }
 
+  public static <T> Page<T> create(PageMeta pageMeta, List<T> pageContent) {
+    return new Page<>(pageMeta, pageContent);
+  }
 }
