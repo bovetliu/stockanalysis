@@ -1,9 +1,9 @@
-package personal.boweiliu.timeseries;
+package org.opentechfin.timeseries;
 
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import javax.annotation.Nullable;
-import personal.boweiliu.utils.TimeUtils;
+import org.opentechfin.utils.TimeUtils;
 
 /**
  */

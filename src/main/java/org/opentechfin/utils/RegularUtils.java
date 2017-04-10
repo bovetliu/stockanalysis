@@ -1,4 +1,4 @@
-package personal.boweiliu.utils;
+package org.opentechfin.utils;
 
 import com.typesafe.config.Config;
 import java.time.LocalDateTime;
@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import personal.boweiliu.timeseries.DataPoint;
+import org.opentechfin.timeseries.DataPoint;
 
 public class RegularUtils {
 

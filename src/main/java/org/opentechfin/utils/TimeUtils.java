@@ -1,4 +1,4 @@
-package personal.boweiliu.utils;
+package org.opentechfin.utils;
 
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;

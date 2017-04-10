@@ -1,4 +1,4 @@
-package personal.boweiliu;
+package org.opentechfin;
 
 import com.google.inject.AbstractModule;
 

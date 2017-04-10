@@ -1,11 +1,11 @@
-package personal.boweiliu.timeseries;
+package org.opentechfin.timeseries;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import org.junit.Assert;
 import org.junit.Test;
-import personal.boweiliu.utils.TimeUtils;
-import personal.boweiliu.utils.TimeUtils.TemporalDirection;
+import org.opentechfin.utils.TimeUtils;
+import org.opentechfin.utils.TimeUtils.TemporalDirection;
 
 /**
  * Unit test for simple App.

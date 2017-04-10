@@ -1,4 +1,4 @@
-package personal.boweiliu.timeseries;
+package org.opentechfin.timeseries;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

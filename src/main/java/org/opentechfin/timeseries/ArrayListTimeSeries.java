@@ -1,11 +1,11 @@
-package personal.boweiliu.timeseries;
+package org.opentechfin.timeseries;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import personal.boweiliu.utils.RegularUtils;
+import org.opentechfin.utils.RegularUtils;
 
 /**
  */
