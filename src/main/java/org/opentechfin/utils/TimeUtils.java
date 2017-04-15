@@ -3,8 +3,12 @@ package org.opentechfin.utils;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -78,10 +82,6 @@ public class TimeUtils {
         localDateTime.getYear(), localDateTime.getMonthValue(), localDateTime.getDayOfMonth()).atStartOfDay());
   }
 
-  public enum TemporalDirection {
-    FORWARD, BACKWARD
-  }
-
   public static void dateTimePrint(LocalDateTime from, LocalDateTime to, int step) {
     if (from.isAfter(to)) {
       if (step >= 0) {
@@ -99,5 +99,45 @@ public class TimeUtils {
     for (LocalDateTime i = from; !i.isAfter(to); i = i.plusSeconds(step)) {
       System.out.println(i.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "," + random.nextInt(100));
     }
+  }
+
+  public static LocalTime secondToLocalTime(int secondElapsedInOneDay) {
+    return LocalTime.ofSecondOfDay(secondElapsedInOneDay);
+  }
+
+  public static LocalDateTime secondToEasternStandard(int unixSecond) {
+    return LocalDateTime.ofEpochSecond(unixSecond, 0, ZoneOffset.of("-05:00"));
+  }
+
+  public static LocalDateTime secondToEasternTime(int unixSecond) {
+    LocalDateTime easterStandard = secondToEasternStandard(unixSecond);
+
+    if (easterStandard.getYear() < 2015 && easterStandard.getYear() > 2018) {
+      throw new IllegalArgumentException(easterStandard.getYear() + " is not supported.");
+    }
+    if (!easterStandard.isBefore(LocalDateTime.of(2015, 3, 8, 2, 0, 0)) &&
+        easterStandard.isBefore(LocalDateTime.of(2015, 11, 1, 1, 0, 0))) {
+      return easterStandard.plusHours(1);
+    }
+
+    if (!easterStandard.isBefore(LocalDateTime.of(2016, 3, 13, 2, 0, 0)) &&
+        easterStandard.isBefore(LocalDateTime.of(2016, 11, 6, 1, 0, 0))) {
+      return easterStandard.plusHours(1);
+    }
+
+    if (!easterStandard.isBefore(LocalDateTime.of(2017, 3, 12, 2, 0, 0)) &&
+        easterStandard.isBefore(LocalDateTime.of(2017, 11, 5, 1, 0, 0))) {
+      return easterStandard.plusHours(1);
+    }
+
+    if (!easterStandard.isBefore(LocalDateTime.of(2018, 3, 11, 2, 0, 0)) &&
+        easterStandard.isBefore(LocalDateTime.of(2018, 11, 4, 1, 0, 0))) {
+      return easterStandard.plusHours(1);
+    }
+    return easterStandard;
+  }
+
+  public enum TemporalDirection {
+    FORWARD, BACKWARD
   }
 }
