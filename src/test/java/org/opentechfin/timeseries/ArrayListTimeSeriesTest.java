@@ -19,7 +19,7 @@ public class ArrayListTimeSeriesTest extends TestBase {
     ArrayListTimeSeries arrayListTimeSeries = (ArrayListTimeSeries) ArrayListTimeSeries.builder()
         .withListOfPoints(dataPointList)
         .withSizeStepInSeconds(60)
-        .withBoundaries(dataPointList.get(0).dateTime, dataPointList.get(dataPointList.size() - 1).dateTime)
+        .withBoundaries(dataPointList.get(0).getDateTime(), dataPointList.get(dataPointList.size() - 1).getDateTime())
         .build();
     Assert.assertEquals("2017-04-06T09:30:00 :   34.05", arrayListTimeSeries.getDataPoint(0).toString());
     Assert.assertEquals("2017-04-06T09:31:00 : 8934.33", arrayListTimeSeries.getDataPoint(1).toString());

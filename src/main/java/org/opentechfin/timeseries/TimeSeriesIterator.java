@@ -69,7 +69,7 @@ public class TimeSeriesIterator implements Iterator<DataPoint> {
     LocalDateTime effectiveLeftBoundary = leftBoundary == null ? TimeUtils.Jan1st2016 : leftBoundary;
     LocalDateTime effectiveRightBoundary = rightBoundary == null ? LocalDateTime.now() : rightBoundary;
     final LocalDateTime nextDateTime;
-    nextDateTime = next.dateTime.plusSeconds(isReverseOrdered ? -stepInSecond : stepInSecond);
+    nextDateTime = next.getDateTime().plusSeconds(isReverseOrdered ? -stepInSecond : stepInSecond);
     if (isReverseOrdered) {
       next = nextDateTime.compareTo(effectiveLeftBoundary) < 0 ? null : timeSeries.getDataPoint(nextDateTime);
     } else {

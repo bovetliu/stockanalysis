@@ -55,8 +55,8 @@ public class ArrayListTimeSeries extends TimeSeries {
       if (!RegularUtils.isSorted(listOfPointsParam, (curr, prev) -> {
         Objects.requireNonNull(curr, "element to be compared, should not be null. One element in "
             + "listOfPointsParam is null.");
-        Objects.requireNonNull(curr.dateTime, "one dateTime field of a DataPoint is null, which is illegal.");
-        return prev.dateTime.compareTo(curr.dateTime);
+        Objects.requireNonNull(curr.getDateTime(), "one dateTime field of a DataPoint is null, which is illegal.");
+        return prev.getDateTime().compareTo(curr.getDateTime());
       })) {
         throw new IllegalArgumentException("should be sorted based on date time.");
       }
