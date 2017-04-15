@@ -1,4 +1,4 @@
-package org.opentechfin;
+package org.opentechfin.guicemodule;
 
 import com.google.inject.AbstractModule;
 

@@ -1,11 +1,10 @@
 package org.opentechfin.timeseries;
 
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opentechfin.persistence.connectors.DailyNamedFileConnector;
-import testlib.TestBase;
+import org.opentechfin.testlib.TestBase;
 
 /**
  */
@@ -18,7 +17,9 @@ public class PagedFileTimeSeriesTest extends TestBase {
    */
   @Test
   public void walkThroughTest() {
+    // initialize one connector
     DailyNamedFileConnector connector = new DailyNamedFileConnector("for_file_paged_test");
+    // build one TimeSeries
     TimeSeries timeSeries = PagedFileTimeSeries.Builder()
         .withConnector(connector)
         .withPageSize(24)
@@ -27,8 +28,8 @@ public class PagedFileTimeSeriesTest extends TestBase {
         .withIsReverseOrder(false)
         .build();
     int cnt = 0;
-    for (DataPoint timeSery : timeSeries) {
-//      System.out.println(timeSery);
+    for (DataPoint dataPoint : timeSeries) {
+//      System.out.println(dataPoint);
       cnt++;
     }
     Assert.assertEquals(48, cnt);
