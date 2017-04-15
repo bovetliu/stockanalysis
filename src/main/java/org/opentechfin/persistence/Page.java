@@ -1,5 +1,6 @@
 package org.opentechfin.persistence;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,5 +44,9 @@ public class Page <T> implements Iterable<T> {
 
   public static <T> Page<T> create(PageMeta pageMeta, List<T> pageContent) {
     return new Page<>(pageMeta, pageContent);
+  }
+
+  public static <T> Page<T> emptyPage(PageMeta pageMeta) {
+    return new Page<>(pageMeta, Collections.<T>emptyList());
   }
 }

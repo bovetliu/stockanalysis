@@ -6,6 +6,9 @@ import org.opentechfin.utils.VerifyArgs;
 
 public class PageMeta {
 
+  /**
+   * Defined for readability.
+   */
   private static final boolean IS_FOR_NEXT_PAGE = true;
 
   public static final BiFunction<PageMeta, Boolean, PageMeta> DEFAULT_BIFUNC = (pageMeta, aBoolean) ->
