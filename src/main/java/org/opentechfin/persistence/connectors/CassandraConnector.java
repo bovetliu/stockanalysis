@@ -13,22 +13,43 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import org.opentechfin.persistence.Page;
 import org.opentechfin.persistence.PageMeta;
 import org.opentechfin.timeseries.DataPoint;
+import org.opentechfin.utils.ConfigHolder;
 import org.opentechfin.utils.Constants;
 import org.opentechfin.utils.TimeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The connector use Cassandra as persistence medium.
  */
 public class CassandraConnector implements PageConnector<DataPoint> {
 
+  private static final Logger logger = LoggerFactory.getLogger(CassandraConnector.class);
+
+  private final ConfigHolder configHolder;
   private final Cluster cluster;
   private final Session session;
-  private CassandraConnector() {
-    cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
+  private final String STOCK_KEY_SPACE;
+
+  /**
+   * Connect to local server
+   */
+  @Inject
+  protected CassandraConnector(ConfigHolder configHolderParam) {
+    configHolder = configHolderParam;
+    cluster = Cluster.builder()
+        .addContactPoint(configHolder.getConfig().getString("cassandra.CONTACT_POINT"))
+        .build();
     session = cluster.connect();
+    STOCK_KEY_SPACE = configHolder.getConfig().getString("cassandra.STOCK_KEY_SPACE");
+    if (!checkIfRelevantTableExists()) {
+      createDefaultTable();
+    }
+    logger.info("STOCK_KEY_SPACE : {}", STOCK_KEY_SPACE);
   }
 
   public Cluster getCluster() {
@@ -37,6 +58,48 @@ public class CassandraConnector implements PageConnector<DataPoint> {
 
   public Session getSession() {
     return session;
+  }
+
+  protected boolean checkIfRelevantTableExists() {
+    String query = "DEFAULT VALUE";
+    try {
+      query = String.format("SELECT keyspace_name, table_name FROM system_schema.tables\n" +
+      "  WHERE keyspace_name = '%s' AND table_name = '%s';", STOCK_KEY_SPACE, Constants.STOCK_COL_FAMILY);
+      ResultSet resultSet = session.execute(query);
+      return !resultSet.isExhausted();
+    } catch (Exception ex) {
+      logger.error("executed query: \n{}", query);
+      logger.error("Exception {} caught!", ex.getClass().getName());
+      logger.error("detail:\n",ex);
+      throw ex;
+    }
+  }
+
+  protected void createDefaultTable() {
+    String query = "DEFAULT VALUE";
+    try {
+      query = String.format("CREATE KEYSPACE IF NOT EXISTS %s\n"
+          + "  WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};",
+          STOCK_KEY_SPACE);
+      session.execute(query);
+
+      query = String.format("CREATE TABLE %1$s.%2$s (\n"
+              + "    %3$s date,\n"
+              + "    %4$s int,\n"
+              + "    PRIMARY KEY(%3$s, %4$s)\n"
+              + ") WITH comment='stock exchange data'\n"
+              + "   AND read_repair_chance = 1.0\n"
+              + "   AND memtable_flush_period_in_ms = 600000;", STOCK_KEY_SPACE,
+          Constants.STOCK_COL_FAMILY,
+          Constants.DATE_COL_NAME,
+          Constants.SEC_OF_DAY_COL_NAME);
+      session.execute(query);
+    } catch (Exception ex) {
+      logger.error("executed query: \n{}", query);
+      logger.error("Exception {} caught!", ex.getClass().getName());
+      logger.error("detail:\n",ex);
+      throw ex;
+    }
   }
 
   /**
@@ -49,7 +112,7 @@ public class CassandraConnector implements PageConnector<DataPoint> {
   public Page<DataPoint> fetchPage(PageMeta pageMeta) {
 
     Select select = QueryBuilder.select(Constants.DATE_COL_NAME, Constants.SEC_OF_DAY_COL_NAME, pageMeta.getRepoName())
-        .from(Constants.STOCK_KEY_SPACE, Constants.STOCK_COL_FAMILY);
+        .from(STOCK_KEY_SPACE, Constants.STOCK_COL_FAMILY);
 
     Clause dateClause = QueryBuilder.eq(Constants.DATE_COL_NAME,
             TimeUtils.Jan1st2016.plusDays(pageMeta.getPageNumber()).format(DateTimeFormatter.ISO_LOCAL_DATE));
@@ -70,6 +133,8 @@ public class CassandraConnector implements PageConnector<DataPoint> {
     }
     return Page.create(pageMeta, pageContent);
   }
+
+
 
   public static String[] timeSeriesFromMeata(PageMeta pageMeta) {
     String[] tokenByColon = pageMeta.getRepoName().split(":");
