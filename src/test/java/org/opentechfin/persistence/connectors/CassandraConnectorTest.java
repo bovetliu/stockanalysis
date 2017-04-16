@@ -28,6 +28,13 @@ public class CassandraConnectorTest extends TestBase {
     Assert.assertTrue(cassandraConnector.checkIfRelevantTableExists());
   }
 
+  @Test
+  public void testAddStockSymbol() {
+    CassandraUtil.addStockToCassandra("AMD", cassandraConnector);
+    CassandraUtil.addStockToCassandra("AMD", cassandraConnector);
+    CassandraUtil.addStockToCassandra("NVDA", cassandraConnector);
+  }
+
   @After
   public void cleanDataBase() {
     String query = "DEFAULT_VALUE";

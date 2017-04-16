@@ -33,7 +33,7 @@ public class CassandraConnector implements PageConnector<DataPoint> {
   private final ConfigHolder configHolder;
   private final Cluster cluster;
   private final Session session;
-  private final String STOCK_KEY_SPACE;
+  public final String STOCK_KEY_SPACE;
 
   /**
    * Connect to local server
@@ -137,15 +137,15 @@ public class CassandraConnector implements PageConnector<DataPoint> {
 
 
   public static String[] timeSeriesFromMeata(PageMeta pageMeta) {
-    String[] tokenByColon = pageMeta.getRepoName().split(":");
+    String[] tokenByColon = pageMeta.getRepoName().split("_");
     tokenByColon[0] = tokenByColon[0].trim();
     if (tokenByColon.length == 1) {
       return new String[]{
-          tokenByColon[0] + ":h",
-          tokenByColon[0] + ":l",
-          tokenByColon[0] + ":o",
-          tokenByColon[0] + ":c",
-          tokenByColon[0] + ":v"
+          tokenByColon[0] + "_h",
+          tokenByColon[0] + "_l",
+          tokenByColon[0] + "_o",
+          tokenByColon[0] + "_c",
+          tokenByColon[0] + "_v"
       };
     } else if (tokenByColon.length == 2) {
       String[] seriesTypes = tokenByColon[1].split(",");
