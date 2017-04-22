@@ -1,10 +1,8 @@
 package org.opentechfin.persistence.connectors;
 
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.opentechfin.testlib.TestBase;
 import org.opentechfin.utils.ConfigHolder;
@@ -29,10 +27,15 @@ public class CassandraConnectorTest extends TestBase {
   }
 
   @Test
-  public void testAddStockSymbol() {
-    CassandraUtil.addStockToCassandra("AMD", cassandraConnector);
-    CassandraUtil.addStockToCassandra("AMD", cassandraConnector);
-    CassandraUtil.addStockToCassandra("NVDA", cassandraConnector);
+  public void testCassandraUtil() {
+    CassandraUtil.addStock("AMD", cassandraConnector);
+    CassandraUtil.addStock("AMD", cassandraConnector);
+    CassandraUtil.addStock("NVDA", cassandraConnector);
+    Assert.assertTrue(CassandraUtil.hasStock("NVDA", cassandraConnector));
+    CassandraUtil.removeStock("AMD", cassandraConnector);
+    CassandraUtil.removeStock("AMD", cassandraConnector);
+    CassandraUtil.removeStock("NVDA", cassandraConnector);
+    Assert.assertFalse(CassandraUtil.hasStock("AMD", cassandraConnector));
   }
 
   @After
