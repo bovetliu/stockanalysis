@@ -38,8 +38,7 @@ public class CassandraConnector implements PageConnector<DataPoint> {
   /**
    * Connect to local server
    */
-  @Inject
-  protected CassandraConnector(ConfigHolder configHolderParam) {
+  public CassandraConnector(ConfigHolder configHolderParam) {
     configHolder = configHolderParam;
     cluster = Cluster.builder()
         .addContactPoint(configHolder.getConfig().getString("cassandra.CONTACT_POINT"))

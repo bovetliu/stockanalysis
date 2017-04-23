@@ -19,7 +19,7 @@ public abstract class TestBase {
 
   protected TestBase() {
     TEST_INPUT = ConfigFactory.parseResources("test_input.conf");
-    investModule = new InvestModule();
+    investModule = InvestModule.getSingleton();
     injector = Guice.createInjector(investModule);
     injector.injectMembers(this);
   }
