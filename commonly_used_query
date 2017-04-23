@@ -1,0 +1,1 @@
+SELECT * FROM stock_key_space.stock_col_family LIMIT 20 ;

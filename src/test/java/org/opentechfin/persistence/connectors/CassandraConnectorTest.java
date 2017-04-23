@@ -15,11 +15,9 @@ public class CassandraConnectorTest extends TestBase {
 
   private final Logger logger = LoggerFactory.getLogger(CassandraConnectorTest.class);
 
-  @Inject
-  private CassandraConnector cassandraConnector;
+  private CassandraConnector cassandraConnector = new CassandraConnector(ConfigHolder.staticGetConfigHolder());
 
-  @Inject
-  private ConfigHolder configHolder;
+  private ConfigHolder configHolder = ConfigHolder.staticGetConfigHolder();
 
   @Test
   public void testTableInitialization() {
@@ -44,7 +42,7 @@ public class CassandraConnectorTest extends TestBase {
     try {
       query = String.format("DROP TABLE IF EXISTS %1$s.%2$s;",
           configHolder.getConfig().getString("cassandra.STOCK_KEY_SPACE"),
-          configHolder.getConfig().getString("cassandra.STOCK_COL_FAMILY"));
+          configHolder.getConfig().getString("cassandra.UNIT_TEST_STOCK_KEY_SPACE"));
       cassandraConnector.getSession().execute(query);
     }catch (Exception ex) {
       logger.error("executed query: \n{}", query);

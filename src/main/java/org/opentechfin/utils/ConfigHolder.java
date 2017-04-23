@@ -28,4 +28,11 @@ public class ConfigHolder {
     }
     return singleton.config;
   }
+
+  public static ConfigHolder staticGetConfigHolder() {
+    if (singleton == null) {
+      singleton = new ConfigHolder();
+    }
+    return singleton;
+  }
 }

@@ -28,6 +28,10 @@ public class TimeUtils {
 
   public static final LocalDateTime Jan1st2016 = LocalDate.of(2016,1,1).atStartOfDay();
 
+  public static final LocalTime MKT_OPEN_TIME = LocalTime.of(9, 30);
+
+  public static final LocalTime MKT_CLOSE_TIME = LocalTime.of(16, 0);
+
   public static final ImmutableBiMap<ChronoUnit, ChronoField> CHRONO_UNIT_VS_CHRONO_FIELD =
       ImmutableBiMap.<ChronoUnit, ChronoField>builder()
       .put(ChronoUnit.YEARS, ChronoField.YEAR)
@@ -101,8 +105,15 @@ public class TimeUtils {
     }
   }
 
+
   public static LocalTime secondToLocalTime(int secondElapsedInOneDay) {
     return LocalTime.ofSecondOfDay(secondElapsedInOneDay);
+  }
+
+  public static com.datastax.driver.core.LocalDate javaLocalDateToDatastaxLocalDate(LocalDate localDate) {
+    return com.datastax.driver.core.LocalDate.fromYearMonthDay(localDate.getYear(),
+        localDate.getMonthValue(),
+        localDate.getDayOfMonth());
   }
 
   public static LocalDateTime secondToEasternStandard(int unixSecond) {

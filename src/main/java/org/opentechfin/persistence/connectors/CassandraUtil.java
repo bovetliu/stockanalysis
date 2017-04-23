@@ -38,9 +38,10 @@ public class CassandraUtil {
       List<ResultSetFuture> resultSetFutureList = new ArrayList<>();
       for (int i = 0; i < typeOfSeries.length; i++) {
         query = String.format("ALTER TABLE %1$s.%2$s\n"
-            + "  ADD %3$s_%4$s float;", connector.STOCK_KEY_SPACE, Constants.STOCK_COL_FAMILY,
+            + "  ADD %3$s_%4$s %5$s;", connector.STOCK_KEY_SPACE, Constants.STOCK_COL_FAMILY,
             symbol.toLowerCase(),
-            typeOfSeries[i]);
+            typeOfSeries[i],
+            typeOfSeries[i].equals("v") ? "double" : "float");
         resultSetFutureList.add(connector.getSession().executeAsync(query));
       }
       resultSetFutureList.forEach(resultSetFuture -> {
