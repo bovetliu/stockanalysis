@@ -2,7 +2,7 @@ package org.opentechfin.timeseries;
 
 import java.time.LocalDateTime;
 import java.util.Iterator;
-import javax.annotation.Nullable;
+import org.opentechfin.timeseries.iterator.TimeSeriesIterator;
 
 /**
  *

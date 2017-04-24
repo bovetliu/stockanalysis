@@ -1,1 +1,5 @@
+TRUNCATE stock_key_space.stock_col_family;
+
 SELECT * FROM stock_key_space.stock_col_family LIMIT 20 ;
+SELECT * FROM stock_key_space.stock_col_family WHERE token(exchange_date) >= token('2017-04-03')
+  AND token(exchange_date) <= token('2017-04-05');

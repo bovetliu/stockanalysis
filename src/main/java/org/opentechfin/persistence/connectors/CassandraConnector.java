@@ -137,10 +137,19 @@ public class CassandraConnector implements PageConnector<DataPoint> {
     Select select = QueryBuilder.select(DATE_COL_NAME, SEC_OF_DAY_COL_NAME, pageMeta.getRepoName())
         .from(STOCK_KEY_SPACE, Constants.STOCK_COL_FAMILY);
 
+
     Clause dateClause = QueryBuilder.eq(DATE_COL_NAME,
-            TimeUtils.Jan1st2016.plusDays(pageMeta.getPageNumber()).format(DateTimeFormatter.ISO_LOCAL_DATE));
+            TimeUtils.javaLocalDateToDatastaxLocalDate(TimeUtils.Jan1st2016.plusDays(pageMeta.getPageNumber()).toLocalDate()));
     Select.Where whereAddedSelect = select.where(dateClause);
-    ResultSet resultSEt = session.execute(whereAddedSelect);
+    ResultSet resultSEt;
+    try {
+      resultSEt = session.execute(whereAddedSelect);
+    } catch (Exception ex) {
+      logger.error("executed query: \n{}", whereAddedSelect.getQueryString());
+      logger.error("Exception {} caught!", ex.getClass().getName());
+      logger.error("detail:\n",ex);
+      throw ex;
+    }
     if (resultSEt.isExhausted()) { // does not hit anything
       return Page.emptyPage(pageMeta);
     }

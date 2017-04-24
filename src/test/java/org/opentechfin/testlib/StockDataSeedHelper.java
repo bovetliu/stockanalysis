@@ -1,13 +1,7 @@
 package org.opentechfin.testlib;
 
-import com.datastax.driver.core.BatchStatement;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.querybuilder.Batch;
-import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
 import java.io.BufferedReader;
@@ -15,9 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import org.opentechfin.persistence.connectors.CassandraConnector;
 import org.opentechfin.persistence.connectors.CassandraUtil;
@@ -30,10 +22,12 @@ import org.slf4j.LoggerFactory;
 public class StockDataSeedHelper {
   private static ConfigHolder configHolder = ConfigHolder.staticGetConfigHolder();
   private static Logger logger = LoggerFactory.getLogger(StockDataSeedHelper.class);
-  public static void loadGoogleFinance(File file, String symbol) {
+
+
+  public static void loadGoogleFinance(File file, String symbol, String keySpace) {
     Preconditions.checkArgument(file != null, "file must not be null");
     CassandraConnector cassandraConnector =
-        new CassandraConnector(ConfigHolder.staticGetConfigHolder(), "stock_key_space");
+        new CassandraConnector(ConfigHolder.staticGetConfigHolder(), keySpace);
     CassandraUtil.addStock("amd", cassandraConnector);
     Config config = configHolder.getConfig();
     String[] colNames = new String[] {
@@ -44,7 +38,8 @@ public class StockDataSeedHelper {
         symbol + "_v"
     };
     PreparedStatement preparedStatement = cassandraConnector.getSession().prepare(
-        String.format("INSERT INTO stock_key_space.stock_col_family (%s, %s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        String.format("INSERT INTO %s.stock_col_family (%s, %s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            keySpace,
             config.getString("cassandra.DATE_COL_NAME"),
             config.getString("cassandra.SEC_OF_DAY_COL_NAME"),
             symbol + "_c",
@@ -56,7 +51,6 @@ public class StockDataSeedHelper {
       String currLine;
       boolean encounteredTimezone = false;
       int unixTimestampStart = 0;
-      BatchStatement batchStatement = new BatchStatement();
       // COLUMNS=DATE,CLOSE,HIGH,LOW,OPEN,VOLUME
       while ((currLine = bufferedReader.readLine()) != null) {
         if (!encounteredTimezone) {
@@ -90,25 +84,8 @@ public class StockDataSeedHelper {
         bound.setFloat(4, lowPrice);
         bound.setFloat(5, openPrice);
         bound.setDouble(6, volume);
-
-//        Insert insert = QueryBuilder.insertInto("stock_key_space", config.getString("cassandra.STOCK_COL_FAMILY"));
-//        insert.value(config.getString("cassandra.DATE_COL_NAME"), dateString);
-//        insert.value(config.getString("cassandra.SEC_OF_DAY_COL_NAME"), timeString);
-//        insert.values(colNames, values);
-//        batchStatement.add(insert);
-        System.out.println(bound.preparedStatement().getQueryString());
         cassandraConnector.getSession().execute(bound);
       }
-//      try {
-//        ResultSet resultSet = cassandraConnector.getSession().execute(batchStatement);
-//        for (Row row : resultSet) {
-//          System.out.println(row);
-//        }
-//      } catch (Exception ex) {
-//        logger.error("Exception {} caught!", ex.getClass().getName());
-//        logger.error("detail:\n",ex);
-//        throw ex;
-//      }
     } catch (IOException ioe) {
       throw new RuntimeException(ioe);
     } finally {
@@ -120,7 +97,7 @@ public class StockDataSeedHelper {
     URL url = DailyNamedFileConnector.class.getClassLoader().getResource(
         "googlefinance/google_finance_2017-04-23_to_prev_20d.txt");
     File file = new File(Preconditions.checkNotNull(url, "url cannot be null").getFile());
-    loadGoogleFinance(file, "amd");
+    loadGoogleFinance(file, "amd", "stock_key_space");
 //    Long days = ChronoUnit.DAYS.between(LocalDate.of(1970, 1, 1), LocalDateTime.now().toLocalDate());
 //    System.out.println(days);
   }

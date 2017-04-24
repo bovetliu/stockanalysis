@@ -1,30 +1,32 @@
-package org.opentechfin.timeseries;
+package org.opentechfin.timeseries.iterator;
 
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import javax.annotation.Nullable;
+import org.opentechfin.timeseries.DataPoint;
+import org.opentechfin.timeseries.TimeSeries;
 import org.opentechfin.utils.TimeUtils;
 
 /**
- * This is default iterator. Usually it is slow.
+ * This is default iterator. No gap
  */
 public class TimeSeriesIterator implements Iterator<DataPoint> {
 
-  private final boolean isReverseOrdered;
+  protected final boolean isReverseOrdered;
 
-  private final boolean isBounded;
+  protected final boolean isBounded;
 
-  private final int stepInSecond;
+  protected final int stepInSecond;
 
-  private DataPoint next;
-
-  @Nullable
-  private final LocalDateTime leftBoundary;
+  protected DataPoint next;
 
   @Nullable
-  private final LocalDateTime rightBoundary;
+  protected final LocalDateTime leftBoundary;
 
-  private final TimeSeries timeSeries;
+  @Nullable
+  protected final LocalDateTime rightBoundary;
+
+  protected final TimeSeries timeSeries;
 
   /**
    * TODO(Bowei) javadoc
@@ -34,7 +36,7 @@ public class TimeSeriesIterator implements Iterator<DataPoint> {
    * @param rightBoundaryParam nullable right boundary
    * @throws IllegalArgumentException when stepInSecondParam lte 0.
    */
-  TimeSeriesIterator(boolean isReverseOrderedParam, boolean isBoundedParam, int stepInSecondParam,
+  public TimeSeriesIterator(boolean isReverseOrderedParam, boolean isBoundedParam, int stepInSecondParam,
       TimeSeries timeSeriesParam,
       @Nullable LocalDateTime leftBoundaryParam,
       @Nullable LocalDateTime rightBoundaryParam) {

@@ -17,8 +17,6 @@ public class CassandraConnectorTest extends TestBase {
 
   private CassandraConnector cassandraConnector = new CassandraConnector(ConfigHolder.staticGetConfigHolder());
 
-  private ConfigHolder configHolder = ConfigHolder.staticGetConfigHolder();
-
   @Test
   public void testTableInitialization() {
     Assert.assertTrue(cassandraConnector.checkIfRelevantTableExists());
@@ -38,17 +36,6 @@ public class CassandraConnectorTest extends TestBase {
 
   @After
   public void cleanDataBase() {
-    String query = "DEFAULT_VALUE";
-    try {
-      query = String.format("DROP TABLE IF EXISTS %1$s.%2$s;",
-          configHolder.getConfig().getString("cassandra.STOCK_KEY_SPACE"),
-          configHolder.getConfig().getString("cassandra.UNIT_TEST_STOCK_KEY_SPACE"));
-      cassandraConnector.getSession().execute(query);
-    }catch (Exception ex) {
-      logger.error("executed query: \n{}", query);
-      logger.error("Exception {} caught!", ex.getClass().getName());
-      logger.error("detail:\n",ex);
-      throw ex;
-    }
+    super.cleanDataBase(cassandraConnector);
   }
 }

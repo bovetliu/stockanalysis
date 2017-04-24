@@ -3,11 +3,14 @@ package org.opentechfin.timeseries;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import org.opentechfin.persistence.Page;
 import org.opentechfin.persistence.PageMeta;
 import org.opentechfin.persistence.connectors.CassandraConnector;
 import org.opentechfin.persistence.connectors.PageConnector;
+import org.opentechfin.timeseries.iterator.StockExchangeHoursIterator;
+import org.opentechfin.timeseries.iterator.TimeSeriesIterator;
 import org.opentechfin.utils.TimeUtils;
 import org.opentechfin.utils.TimeUtils.TemporalDirection;
 
@@ -27,9 +30,8 @@ public class CassandraTimeSeries extends TimeSeries {
   }
 
 
-  @Override
-  public TimeSeries subSeries(LocalDateTime leftBoundary, LocalDateTime rightBoundary) {
-    throw new UnsupportedOperationException("currently do not support");
+  public static Builder builder() {
+    return new Builder();
   }
 
   @Override
@@ -59,6 +61,19 @@ public class CassandraTimeSeries extends TimeSeries {
   }
 
 
+  @Override
+  public Iterator<DataPoint> iterator() {
+    return new StockExchangeHoursIterator(isReverseOrdered, isBounded, sizeStepInSeconds,
+        this,
+        leftBoundary,
+        rightBoundary);
+  }
+
+  @Override
+  public TimeSeries subSeries(LocalDateTime leftBoundary, LocalDateTime rightBoundary) {
+    throw new UnsupportedOperationException("currently do not support");
+  }
+
   public static class Builder extends TimeSeriesBuilder {
 
     private CassandraConnector cassandraConnector;
@@ -75,7 +90,7 @@ public class CassandraTimeSeries extends TimeSeries {
 
     @Override
     public TimeSeries build() {
-      return null;
+      return new CassandraTimeSeries(this);
     }
 
     public String getRepoName() {
